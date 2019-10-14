@@ -8,7 +8,8 @@ while true; do
 
 		if [ -d "$repoName" ] 
 		then
-			ls $repoName
+			cd $repoName;
+            ls
 			break
 		elif [ ! -d "$repoName" ] 
 		then
@@ -65,26 +66,38 @@ do
     esac
 done 
 
+
+#Andrew
 createFile()
 {
 	#CALL CREATEFILE BASH SCRIPT 
 }
 
+#James
 editFile()
 {
+    #Ask user which file they would like to edit
+    #check if file exists
+    #if file exists then ask which editor they would like to use
+    #move file into users editing directory
+    #open file and let user edit
+    #when user has finished editing file(check processes for editor)
+    #move file back into starting directory and compare file with most recent backup
+    #create a log file and save it in folder called logs.
+    #then create an automatic backup
 	#CALL EDIT FILE BASH SCRIPT
 }
-
+#Dillon
 backupFile()
 {
 	#CALL BACKUP FILE BASH SCRIPT
 }
-
+#Andrew
 restoreFile()
 {
 	#CALL RESTORE FILE BASH SCRIPT
 }
-
+#Dillon
 archiveFile()
 {
 	#CALL ARCHIVE FILE BASH SCRIPT
