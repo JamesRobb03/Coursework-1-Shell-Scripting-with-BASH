@@ -22,19 +22,18 @@ editFile()
     #create a log file and save it in folder called logs.
     #then create an automatic backup
 	#CALL EDIT FILE BASH SCRIPT
-
+    echo "Files in this directory: "
     ls
     echo " "
     echo "Which file would you like to edit: "
-    echo " "
     read filename
     if [ -f "$filename" ]; then
-        mkdir $userName && mv $filename $userName && cd $userName && nano $fileName && echo "Enter Y when finished with file:" 
-        read finish
-        if [ "$finish" == "Y" ] ; then
-            echo "DONE"
-        fi
-
+        mkdir $userName && mv $filename $userName && cd $userName && nano $fileName 
+        while [ -n "`pgrep nano`" ]; do :; done
+        mv $filename .. && cd .. && rmdir $userName
+        #check for backup file. if backup file exists then output diff comand to logfile in log directory
+        #then use backup command to backup filegit stat
+        echo "success"
 
     else
         echo "does not exist. please try again"
