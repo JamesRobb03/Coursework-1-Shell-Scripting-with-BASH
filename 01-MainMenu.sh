@@ -1,4 +1,5 @@
 userName=$(whoami)
+
 #Andrew
 createFile()
 {
@@ -22,17 +23,24 @@ editFile()
     #create a log file and save it in folder called logs.
     #then create an automatic backup
 	#CALL EDIT FILE BASH SCRIPT
+    clear
+    echo "-EDITING FILE-"
     echo "Files in this directory: "
     ls
     echo " "
     echo "Which file would you like to edit: "
     read filename
+    #checks to see if file exists
     if [ -f "$filename" ]; then
+        # code which creates folder and moves file into it when user is editing
         mkdir $userName && mv $filename $userName && cd $userName && nano $fileName 
+        #while a process of nano is open do nothing
         while [ -n "`pgrep nano`" ]; do :; done
+        #moves file out of user folder then deletes users folder
         mv $filename .. && cd .. && rmdir $userName
         #check for backup file. if backup file exists then output diff comand to logfile in log directory
-        #then use backup command to backup filegit stat
+
+        #then use backup command to backup file
         echo "success"
 
     else
@@ -61,8 +69,9 @@ archiveFile()
 
 notFound=true
 
+clear
 echo "Hello "$userName
-ls
+ls -d */
 read -p "Please enter which repository you would like to view:" repoName
 
 while true; do
@@ -80,7 +89,7 @@ while true; do
 done
 
 echo "Menu Test, Please Select:"
-PS3='Please enter your choice: '
+PS3='Please enter your choice(1,2,3,4): '
 options=("New File" "Edit File" "Backup & Restore" "Quit")
 select opt in "${options[@]}"
 do
