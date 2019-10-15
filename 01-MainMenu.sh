@@ -26,7 +26,7 @@ editFile()
     clear
     echo "-EDITING FILE-"
     echo "Files in this directory: "
-    ls
+    ls -p | grep -v / 
     echo " "
     echo "Which file would you like to edit: "
     read filename
@@ -39,6 +39,18 @@ editFile()
         #moves file out of user folder then deletes users folder
         mv $filename .. && cd .. && rmdir $userName
         #check for backup file. if backup file exists then output diff comand to logfile in log directory
+        cd Backups || (mkdir Backups && cd Backups)
+        if [ -f "$filename"* ]; then
+            compareFile=$(ls -t $filename* | head -1)
+            cd ..
+            diff "Backups/$compareFile" "$fileName" > testlog
+        else
+            echo "File does not exist in backups"
+            cd ..
+            cp $fileName testlog
+            #backup file
+        fi
+
 
         #then use backup command to backup file
         echo "success"
