@@ -8,8 +8,15 @@ createFile()
     then
       echo "File $fileName already exists!"
     else
-      echo >> $fileName
-      echo "$fileName added!"
+    	#prevents a file called "QUIT" being made
+    	if [ $fileName=="QUIT" ]
+    	then
+    		echo "Quitting..."
+    	else
+    	#Creates new file and notifies user of success
+        echo >> $fileName
+        echo "$fileName added!"
+        fi
     fi
 }
 
@@ -55,19 +62,25 @@ backupFile()
 #Andrew
 restoreFile()
 {
+	#Alerts the user that it is case sensitive, and asks "Backups or Archives?"
 	echo "Case Sensitive!"
     echo "Backups or Archives?"
+    #Gives the user a prompt, and collects their data under "File"
     read -p "Enter Here: " file
+    #Checks the file exists before attempting a restore
     if [ -e $file ]; 
     then
         echo "Entering $fileName... " 
-        ls $file
+        #Enters the required file, and displays the files inside
         cd $file
+        ls $file
         echo ""
         echo "Which file would you like to restore?"
         read -p "Enter file here: " restore
+        #Sets the restore location
         cp -r $restore /Coursework-1-Shell-Scripting-with-BASH
     else
+    	#Error Check
         echo "$file doesn't exist."
     fi
 }
