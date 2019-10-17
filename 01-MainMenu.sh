@@ -102,7 +102,7 @@ backupFile()
 
      if [ -f "$lFileName" ]; then
         cp "$lFileName" "$newFileName"
-        mv $newFileName ~/BashCMS/$repoName/Backups
+        mv $newFileName Backups
         cd Backups
         
         if [ -f "$newFileName" ]; then
@@ -124,8 +124,6 @@ restoreFile()
     #Gives the user a prompt, and collects their data under "File"
     read -p "Enter Here: " file
     #Checks the file exists before attempting a restore
-    pwd
-    echo $file
     if [ -e $file ]; 
     then
         if [ $file=="Backups" ];
@@ -141,7 +139,7 @@ restoreFile()
             #Copies to the restore location
             if [ -e $restore ]; 
             then
-                cp -r $restore ~/BashCMS/$repoName
+                cp -r $restore $repoName
             else
                 echo "$file doesn't exist."
             fi
@@ -158,7 +156,8 @@ restoreFile()
                 if [ -e $restore ]; 
                 then
                     #unzips folder
-                    unzip $restore -d ~/BashCMS/$repoName
+                    unzip $restore -d $repoName
+
                 else
                     echo "$file doesn't exist."
                 fi
@@ -177,53 +176,54 @@ archiveFile()
 {
     userChoiceArchive=0 
 
-echo "Please choose from the following options"
-echo "1. Archive a select number of files from the chosen repository"
-echo "2. Archive the entire selected repository"
-read userChoiceArchive
-while [[ "$userChoiceArchive" != "1" && "$userChoiceArchive" != "2" ]]; do
-    echo "This is an invalid choice, please select 1 or 2 from the above choices"
+
+    echo "Please choose from the following options"
+    echo "1. Archive a select number of files from the chosen repository"
+    echo "2. Archive the entire selected repository"
     read userChoiceArchive
-done
-if [ $userChoiceArchive = "1" ]; then
-    now=$(date '+%F_%H:%M:%S')
-    newFolderName="${repoName}"-"${now}"
-    mkdir $newFolderName
+    while [[ "$userChoiceArchive" != "1" && "$userChoiceArchive" != "2" ]]; do
+        echo "This is an invalid choice, please select 1 or 2 from the above choices"
+        read userChoiceArchive
+    done
+    if [ $userChoiceArchive = "1" ]; then
+        now=$(date '+%F_%H:%M:%S')
+        newFolderName="${repoName}"-"${now}"
+        mkdir $newFolderName
 
-    mv $newFolderName ~/BashCMS/$repoName/Archive
-    echo "Please enter your choice from the following file names to archive"
-    echo "Or enter QUIT to exit"
-    ls
-    read fileToArchive
-    isDone="No"
-    while [[ "$isDone" == "No" ]]; do  
+        mv $newFolderName Archive
+        echo "Please enter your choice from the following file names to archive"
+        echo "Or enter QUIT to exit"
+        ls
+        read fileToArchive
+        isDone="No"
+        while [[ "$isDone" == "No" ]]; do  
 
-        while [[ "$fileToArchive" != "QUIT" ]]; do 
-            if [ -f "$fileToArchive " ]; then 
-                cp $fileToArchive ~/BashCMS/$repoName/Archive/$newFolderName
-                echo "Select another file, or enter QUIT to exit"
-                read fileToArchive
-            fi
-        done 
+            while [[ "$fileToArchive" != "QUIT" ]]; do 
+                if [ -f "$fileToArchive " ]; then 
+                    cp $fileToArchive Archive/$newFolderName
+                    echo "Select another file, or enter QUIT to exit"
+                    read fileToArchive
+                fi
+            done 
 
-        isDone="Yes"
+            isDone="Yes"
+            cd Archive 
+            zip -r $newFolderName $newFolderName
+            rm -r $newFolderName
+        done
+
+    elif [ $userChoiceArchive = "2" ]; then
+        now=$(date '+%F_%H:%M:%S')
+        newFolderName="${repoName}"-"${now}"
+        mkdir $newFolderName
+        mv $newFolderName Archive
+        cp * Archive/$newFolderName
         cd Archive 
         zip -r $newFolderName $newFolderName
         rm -r $newFolderName
-    done
+    fi
 
-elif [ $userChoiceArchive = "2" ]; then
-    now=$(date '+%F_%H:%M:%S')
-    newFolderName="${repoName}"-"${now}"
-    mkdir $newFolderName
-    mv $newFolderName ~/BashCMS/$repoName/Archive
-    cp * ~/BashCMS/$repoName/Archive/$newFolderName
-    cd Archive 
-    zip -r $newFolderName $newFolderName
-    rm -r $newFolderName
-fi
-
-cd ..
+    cd ..
 }
 
 
@@ -281,7 +281,8 @@ while true; do
 
         fi
     elif [ "$userInput" == "4" ]; then
-        cd..
+        cd ..
+
         ls -d */
         read -p "Please enter which repository you would like to view:" repoName
         cd $repoName
