@@ -225,8 +225,18 @@ archiveFile()
 
     cd ..
 }
+delete()
+{
+    read -p "Please enter file you wish to delete: " deleteFile
+    if [ -f "$deleteFile" ]; then
+       rm $deleteFile
+    else
+        echo "File cannot be found. Try Again"
+    fi
+}
 
-
+#Main Menu
+clear
 echo "Currently logged in as "$userName
 echo "Available repositories: "
 ls -d */
@@ -255,15 +265,18 @@ while true; do
     echo " "
     echo "1. New File"
     echo "2. Edit File"
-    echo "3. Archive or Restore"
-    echo "4. Change directory"
-    echo "5. Quit"
+    echo "3. Delete File"
+    echo "4. Archive or Restore"
+    echo "5. Change repository"
+    echo "6. Quit"
     read -p ":" userInput
     if [ "$userInput" == "1" ]; then
         createFile
     elif [ "$userInput" == "2" ]; then
         editFile
     elif [ "$userInput" == "3" ]; then
+        delete
+    elif [ "$userInput" == "4" ]; then
         echo " "
         echo "1) Restore"
         echo "2) Archive"
@@ -280,13 +293,14 @@ while true; do
             archiveFile
 
         fi
-    elif [ "$userInput" == "4" ]; then
+    elif [ "$userInput" == "5" ]; then
         cd ..
 
         ls -d */
         read -p "Please enter which repository you would like to view:" repoName
         cd $repoName
-    elif [ "$userInput" == "5" ]; then
+    elif [ "$userInput" == "6" ]; then
+        clear
         break
     else
         echo "Invalid input please try again"
