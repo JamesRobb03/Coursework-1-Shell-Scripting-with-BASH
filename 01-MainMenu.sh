@@ -119,7 +119,7 @@ backupFile()
 #Andrew
 restoreFile()
 {
-   echo "Case Sensitive!"
+    echo "Case Sensitive!"
     echo "Backups or Archive?"
     #Gives the user a prompt, and collects their data under "File"
     read -p "Enter Here: " file
@@ -139,7 +139,7 @@ restoreFile()
             #Copies to the restore location
             if [ -e $restore ]; 
             then
-                cp -r $restore $repoName
+                cp -r $restore ..
             else
                 echo "$file doesn't exist."
             fi
