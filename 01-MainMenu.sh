@@ -55,8 +55,7 @@ editFile()
             #creates a logfile of the file that has been edited
             logfile="$(echo $filename)_logs"
             touch $logfile
-            echo $(whoami)>$logfile
-            echo "File created by $(whoami) at $(date)">>$logfile
+            echo "File created by $(whoami) at $(date)">$logfile
             echo "Added:">>$logfile
             cat ../$filename>>$logfile
             echo "">>$logfile
