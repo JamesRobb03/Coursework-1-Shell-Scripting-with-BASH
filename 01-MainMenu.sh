@@ -10,13 +10,13 @@ createFile()
       echo "File $fileName already exists!"
     else
         #prevents a file called "QUIT" being made
-        if [ $fileName=="QUIT" ]
+        if [ $fileName == "QUIT" ];
         then
             echo "Quitting..."
         else
-        #Creates new file and notifies user of success
-        echo >> $fileName
-        echo "$fileName added!"
+            #Creates new file and notifies user of success
+            touch $fileName
+            echo "$fileName added!"
         fi
     fi
 }
@@ -126,7 +126,7 @@ restoreFile()
     #Checks the file exists before attempting a restore
     if [ -e $file ]; 
     then
-        if [ $file=="Backups" ];
+        if [ $file == "Backups" ];
         then
             echo $file
             echo "Entering $file... " 
@@ -144,7 +144,7 @@ restoreFile()
                 echo "$file doesn't exist."
             fi
         else
-            if [ $file=="Archive" ];
+            if [ $file == "Archive" ];
             then
                 echo "Entering $fileName... " 
                 #Enters the required file, and displays the files inside
