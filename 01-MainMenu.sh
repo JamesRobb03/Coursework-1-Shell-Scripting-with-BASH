@@ -3,8 +3,22 @@ userName=$(whoami)
 #Andrew
 createFile()
 {
-	#CALL CREATEFILE BASH SCRIPT 
-    echo ""
+     #Asks the user what filename they'd like to give the file
+    read -p "Please enter file name: " fileName
+    if [ -e $fileName ]; 
+    then
+      echo "File $fileName already exists!"
+    else
+        #prevents a file called "QUIT" being made
+        if [ $fileName=="QUIT" ]
+        then
+            echo "Quitting..."
+        else
+        #Creates new file and notifies user of success
+        echo >> $fileName
+        echo "$fileName added!"
+        fi
+    fi
 }
 
 #James
@@ -37,7 +51,7 @@ editFile()
         #check for backup file. if backup file exists then output diff command to logfile in log directory
         #Create a logs folder. have a file called filename. then write name>changes>date
         cd Backups || (mkdir Backups && cd Backups)
-        if [ -f "$filename"* ]; then
+        if ls $fileName* 1> /dev/null 2>&1; then
             compareFile=$(ls -t $filename* | head -1)
             difference=$(diff $compareFile ../$filename) 
             cd ..
@@ -51,7 +65,7 @@ editFile()
         else
             #This block of code runs if no backup file is available for the edited file
             cd ..
-            cd logs || mkdir logs && cd logs
+            cd logs || ( mkdir logs && cd logs )
             #creates a logfile of the file that has been edited
             logfile="$(echo $filename)_logs"
             touch $logfile
@@ -63,6 +77,8 @@ editFile()
             cd ..
         fi
 
+        backupFile
+
         #then use backup command to backup file
         echo "success"
 
@@ -73,23 +89,144 @@ editFile()
 #Dillon
 backupFile()
 {
-	#CALL BACKUP FILE BASH SCRIPT
-    echo ""
+    lFileName=$filename
+    now=$(date '+%F_%H:%M:%S')
+
+    newFileName="${lFileName}"-"${now}"
+
+     while [ ! -f "$lFileName" ]; do
+        echo "Error! This file does not exist"
+        echo "$lfileName"
+        break
+     done
+
+     if [ -f "$lFileName" ]; then
+        cp "$lFileName" "$newFileName"
+        mv $newFileName ~/BashCMS/$repoName/Backups
+        cd Backups
+        
+        if [ -f "$newFileName" ]; then
+            echo "Backup Successful"
+
+        elif [ ! -f "newFileName" ]; then
+            echo "ERROR";
+        fi 
+    fi
+
+    cd ..
+
 }
 #Andrew
 restoreFile()
 {
-	#CALL RESTORE FILE BASH SCRIPT
-    echo""
+   echo "Case Sensitive!"
+    echo "Backups or Archive?"
+    #Gives the user a prompt, and collects their data under "File"
+    read -p "Enter Here: " file
+    #Checks the file exists before attempting a restore
+    pwd
+    echo $file
+    if [ -e $file ]; 
+    then
+        if [ $file=="Backups" ];
+        then
+            echo $file
+            echo "Entering $file... " 
+            #Enters the required file, and displays the files inside
+            cd $file
+            ls 
+            echo ""
+            echo "Which file would you like to restore?"
+            read -p "Enter file here: " restore
+            #Copies to the restore location
+            if [ -e $restore ]; 
+            then
+                cp -r $restore ~/BashCMS/$repoName
+            else
+                echo "$file doesn't exist."
+            fi
+        else
+            if [ $file=="Archive" ];
+            then
+                echo "Entering $fileName... " 
+                #Enters the required file, and displays the files inside
+                cd $file
+                ls 
+                echo ""
+                echo "Which file would you like to unzip?"
+                read -p "Enter file here: " restore
+                if [ -e $restore ]; 
+                then
+                    #unzips folder
+                    unzip $restore -d ~/BashCMS/$repoName
+                else
+                    echo "$file doesn't exist."
+                fi
+            else
+                echo "$file doesn't exist."
+            fi
+        fi
+    else
+        #Error Check
+        echo "$file doesn't exist."
+    fi
+    cd ..
 }
 #Dillon
 archiveFile()
 {
-	#CALL ARCHIVE FILE BASH SCRIPT
-    echo ""
+    userChoiceArchive=0 
+
+echo "Please choose from the following options"
+echo "1. Archive a select number of files from the chosen repository"
+echo "2. Archive the entire selected repository"
+read userChoiceArchive
+while [[ "$userChoiceArchive" != "1" && "$userChoiceArchive" != "2" ]]; do
+    echo "This is an invalid choice, please select 1 or 2 from the above choices"
+    read userChoiceArchive
+done
+if [ $userChoiceArchive = "1" ]; then
+    now=$(date '+%F_%H:%M:%S')
+    newFolderName="${repoName}"-"${now}"
+    mkdir $newFolderName
+
+    mv $newFolderName ~/BashCMS/$repoName/Archive
+    echo "Please enter your choice from the following file names to archive"
+    echo "Or enter QUIT to exit"
+    ls
+    read fileToArchive
+    isDone="No"
+    while [[ "$isDone" == "No" ]]; do  
+
+        while [[ "$fileToArchive" != "QUIT" ]]; do 
+            if [ -f "$fileToArchive " ]; then 
+                cp $fileToArchive ~/BashCMS/$repoName/Archive/$newFolderName
+                echo "Select another file, or enter QUIT to exit"
+                read fileToArchive
+            fi
+        done 
+
+        isDone="Yes"
+        cd Archive 
+        zip -r $newFolderName $newFolderName
+        rm -r $newFolderName
+    done
+
+elif [ $userChoiceArchive = "2" ]; then
+    now=$(date '+%F_%H:%M:%S')
+    newFolderName="${repoName}"-"${now}"
+    mkdir $newFolderName
+    mv $newFolderName ~/BashCMS/$repoName/Archive
+    cp * ~/BashCMS/$repoName/Archive/$newFolderName
+    cd Archive 
+    zip -r $newFolderName $newFolderName
+    rm -r $newFolderName
+fi
+
+cd ..
 }
 
-clear
+
 echo "Currently logged in as "$userName
 echo "Available repositories: "
 ls -d */
@@ -110,7 +247,7 @@ while true; do
 done
 
 while true; do
-    clear
+    
     echo "current directory: "
     pwd
     echo "Available files: "
@@ -118,8 +255,9 @@ while true; do
     echo " "
     echo "1. New File"
     echo "2. Edit File"
-    echo "3. Backup or Restore"
-    echo "4. Quit"
+    echo "3. Archive or Restore"
+    echo "4. Change directory"
+    echo "5. Quit"
     read -p ":" userInput
     if [ "$userInput" == "1" ]; then
         createFile
@@ -127,26 +265,27 @@ while true; do
         editFile
     elif [ "$userInput" == "3" ]; then
         echo " "
-        echo "1) Backup"
-        echo "2) Restore"
-        echo "3) Archive"
+        echo "1) Restore"
+        echo "2) Archive"
         echo " "
         read varname
-        while [[ "$varname" !=  "1" && "$varname" != "2" && "$varname" != "3" ]]; do
-        echo "This is an invalid choice. Please choose from select 1, 2, or 3 as your choice, corresponding with the above options."
+        while [[ "$varname" !=  "1" && "$varname" != "2" ]]; do
+        echo "This is an invalid choice. Please choose from select 1, or 2 as your choice, corresponding with the above options."
             read varname
         done
 
         if [ "$varname" == "1" ] ; then
-            backupFile
-        elif [ "$varname" == "2" ]; then
             restoreFile
-            
-        elif [ "$varname" == "3" ]; then 
+        elif [ "$varname" == "2" ]; then
             archiveFile
 
         fi
     elif [ "$userInput" == "4" ]; then
+        cd..
+        ls -d */
+        read -p "Please enter which repository you would like to view:" repoName
+        cd $repoName
+    elif [ "$userInput" == "5" ]; then
         break
     else
         echo "Invalid input please try again"
