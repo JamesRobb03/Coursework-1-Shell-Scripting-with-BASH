@@ -157,6 +157,7 @@ restoreFile()
                 then
                     #unzips folder
                     unzip $restore -d $repoName
+
                 else
                     echo "$file doesn't exist."
                 fi
@@ -174,6 +175,7 @@ restoreFile()
 archiveFile()
 {
     userChoiceArchive=0 
+
 
     echo "Please choose from the following options"
     echo "1. Archive a select number of files from the chosen repository"
@@ -280,6 +282,7 @@ while true; do
         fi
     elif [ "$userInput" == "4" ]; then
         cd ..
+
         ls -d */
         read -p "Please enter which repository you would like to view:" repoName
         cd $repoName
