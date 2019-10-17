@@ -247,7 +247,6 @@ while true; do
         if [ -d "$repoName" ] 
         then
             cd $repoName;
-            ls
             break
         elif [ ! -d "$repoName" ] 
         then
@@ -258,8 +257,7 @@ done
 
 while true; do
     
-    echo "current directory: "
-    pwd
+    echo "current directory: $(pwd)"
     echo "Available files: "
     ls -p | grep -v / 
     echo " "
@@ -298,7 +296,15 @@ while true; do
 
         ls -d */
         read -p "Please enter which repository you would like to view:" repoName
-        cd $repoName
+        while true; do
+            if [ ! -d "$repoName" ]; then
+                echo "Could not find. Please try again"
+                read -p "Please enter which repository you would like to view:" repoName
+            else
+                cd $repoName
+                break
+            fi
+        done
     elif [ "$userInput" == "6" ]; then
         clear
         break
