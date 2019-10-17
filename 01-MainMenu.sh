@@ -88,6 +88,7 @@ archiveFile()
     echo ""
 }
 
+#main menu.
 clear
 echo "Currently logged in as "$userName
 echo "Available repositories: "
@@ -132,7 +133,7 @@ while true; do
         echo " "
         read varname
         while [[ "$varname" !=  "1" && "$varname" != "2" && "$varname" != "3" ]]; do
-        echo "This is an invalid choice. Please choose from select 1, 2, or 3 as your choice, corresponding with the above options."
+            echo "This is an invalid choice. Please choose from select 1, 2, or 3 as your choice, corresponding with the above options."
             read varname
         done
 
