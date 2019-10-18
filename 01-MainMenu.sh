@@ -128,7 +128,6 @@ restoreFile()
     then
         if [ $file == "Backups" ];
         then
-            echo $file
             echo "Entering $file... " 
             #Enters the required file, and displays the files inside
             cd $file
@@ -140,6 +139,12 @@ restoreFile()
             if [ -e $restore ]; 
             then
                 cp -r $restore ..
+                cd ..
+                ls -p | grep -v /
+                read -p "please enter the name of the file you wish to replace with this backup: " replace
+                mv $restore $replace
+                cd Backups
+
             else
                 echo "$file doesn't exist."
             fi
